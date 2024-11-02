@@ -1,10 +1,10 @@
 // Hooks
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 // Libs
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 // Constants
-import { USER_ID, ACCESS_TOKEN_COOKIE } from "../constants/key";
+import { ACCESS_TOKEN_COOKIE } from "../constants/key";
 // Components
 import { Button, List, ListItem, Card } from "@material-tailwind/react";
 // Icons
@@ -19,15 +19,38 @@ import {
 const HomePage = () => {
   const navigate = useNavigate();
 
+  const [profile, setProfile] = useState<any>({});
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-GB");
+  };
+
   useEffect(() => {
     if (!Cookies.get(ACCESS_TOKEN_COOKIE)) {
       navigate("/auth/login");
     }
+    console.log(Cookies.get(ACCESS_TOKEN_COOKIE));
+    fetch(`${import.meta.env.VITE_API_URL}/me`, {
+      credentials: "include",
+      headers: {
+        accept: "application/json",
+        Authorization: `Bearer ${Cookies.get(ACCESS_TOKEN_COOKIE)}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === 200) {
+          setProfile(data.metadata);
+        } else {
+          Cookies.remove(ACCESS_TOKEN_COOKIE);
+          navigate("/auth/login");
+        }
+      });
   }, []);
 
   const logOut = () => {
     Cookies.remove(ACCESS_TOKEN_COOKIE);
-    Cookies.remove(USER_ID);
     navigate("/auth/login");
   };
   return (
@@ -41,21 +64,21 @@ const HomePage = () => {
               {...({} as any)}
             >
               <FaTag />
-              Simon Gin
+              {profile.name}
             </ListItem>
             <ListItem
               className="text-xl font-bold flex flex-row justify-center gap-3 select-none"
               {...({} as any)}
             >
               <FaMailBulk />
-              tm@gmail.com
+              {profile.email}
             </ListItem>
             <ListItem
               className="text-xl font-bold flex flex-row justify-center gap-3 select-none"
               {...({} as any)}
             >
               <FaCalendar />
-              01/01/2000
+              {formatDate(profile.createdAt)}
             </ListItem>
           </List>
         </Card>

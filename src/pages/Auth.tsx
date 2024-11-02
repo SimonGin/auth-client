@@ -1,7 +1,7 @@
 // Types
 import { FormFields } from "../types";
 // Constants
-import { ACCESS_TOKEN_COOKIE, USER_ID } from "../constants/key";
+import { ACCESS_TOKEN_COOKIE } from "../constants/key";
 // React Hooks
 import { useEffect } from "react";
 // Libs
@@ -80,8 +80,7 @@ const AuthPage = () => {
         .then((res) => res.json())
         .then((data) => {
           if (data.status === 200) {
-            Cookies.set(ACCESS_TOKEN_COOKIE, data?.metadata?.token);
-            Cookies.set(USER_ID, data?.metadata?.uid);
+            Cookies.set(ACCESS_TOKEN_COOKIE, data?.metadata?.access_token);
             toast.success(data.msg);
             navigate("/");
           } else {
