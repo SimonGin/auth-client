@@ -1,5 +1,9 @@
+// Types
+import { FormFields } from "../types";
 // React Hooks
-
+import { useEffect } from "react";
+// Libs
+import { SubmitHandler, useForm } from "react-hook-form";
 // Router
 import { Link, useParams } from "react-router-dom";
 //
@@ -11,9 +15,35 @@ import { FaRegAddressCard } from "react-icons/fa";
 const AuthPage = () => {
   const { variant } = useParams();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    reset,
+  } = useForm<FormFields>();
+
+  useEffect(() => {
+    reset({
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+  }, [variant]);
+
+  const formPassword = watch("password");
+
+  const onSubmit: SubmitHandler<FormFields> = (data) => {
+    console.log(data);
+  };
+
   return (
     <div className="h-screen w-screen flex justify-center items-center">
-      <form className="h-2/3 w-1/3 p-10 flex flex-col items-center gap-3 bg-white rounded-2xl shadow">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="h-2/3 w-1/3 p-6 flex flex-col items-center gap-3 bg-white rounded-2xl shadow"
+      >
         <section className="flex flex-col items-center gap-2">
           {variant === "login" ? (
             <MdLogin size={100} />
@@ -23,23 +53,38 @@ const AuthPage = () => {
           <h1 className="text-2xl font-bold">
             {variant === "login" ? "Welcome Back!" : "Get Started!"}
           </h1>
+          <h3 className="font-medium italic">
+            {variant === "login"
+              ? "Enter your credentials to sign in"
+              : "Enter your information to sign you up"}
+          </h3>
         </section>
         <section className="w-4/5 flex flex-col items-center gap-2">
           {variant === "register" && (
             <div className="w-full">
               <Input
+                {...register("name", { required: "Username is required" })}
                 variant="standard"
                 size="md"
-                className="text-xl"
                 color="gray"
+                className="text-xl"
                 label="Username"
                 {...({} as any)}
               />
-              <p className="text-[#F00] text-sm">Chưa nhập</p>
+              {errors.name && (
+                <p className="text-[#F00] text-sm">{errors.name?.message}</p>
+              )}
             </div>
           )}
           <div className="w-full">
             <Input
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: "Invalid email address",
+                },
+              })}
               variant="standard"
               size="md"
               className="text-xl"
@@ -47,10 +92,19 @@ const AuthPage = () => {
               label="Email"
               {...({} as any)}
             />
-            <p className="text-[#F00] text-sm">Chưa nhập</p>
+            {errors.email && (
+              <p className="text-[#F00] text-sm">{errors.email?.message}</p>
+            )}
           </div>
           <div className="w-full">
             <Input
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
+              })}
               type="password"
               variant="standard"
               size="md"
@@ -59,11 +113,16 @@ const AuthPage = () => {
               label="Password"
               {...({} as any)}
             />
-            <p className="text-[#F00] text-sm">Chưa nhập</p>
+            <p className="text-[#F00] text-sm">{errors.password?.message}</p>
           </div>
           {variant === "register" && (
             <div className="w-full">
               <Input
+                {...register("confirmPassword", {
+                  required: "Confirm password is required",
+                  validate: (value) =>
+                    value === formPassword || "The passwords do not match",
+                })}
                 type="password"
                 variant="standard"
                 size="md"
@@ -72,7 +131,11 @@ const AuthPage = () => {
                 label="Password"
                 {...({} as any)}
               />
-              <p className="text-[#F00] text-sm">Chưa nhập</p>
+              {errors.confirmPassword && (
+                <p className="text-[#F00] text-sm">
+                  {errors.confirmPassword?.message}
+                </p>
+              )}
             </div>
           )}
 
