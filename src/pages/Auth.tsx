@@ -1,12 +1,16 @@
 // Types
 import { FormFields } from "../types";
+// Constants
+import { ACCESS_TOKEN_COOKIE, USER_ID } from "../constants/key";
 // React Hooks
 import { useEffect } from "react";
 // Libs
+import Cookies from "js-cookie";
 import { SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 // Router
-import { Link, useParams } from "react-router-dom";
-//
+import { Link, useParams, useNavigate } from "react-router-dom";
+// Components
 import { Button, Input } from "@material-tailwind/react";
 // Icons
 import { MdLogin } from "react-icons/md";
@@ -14,6 +18,7 @@ import { FaRegAddressCard } from "react-icons/fa";
 
 const AuthPage = () => {
   const { variant } = useParams();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -34,8 +39,53 @@ const AuthPage = () => {
 
   const formPassword = watch("password");
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    if (variant === "register") {
+      fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          password: data.password,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status === 200) {
+            toast.success(data.msg);
+            navigate("/auth/login");
+          } else {
+            toast.error(data.msg);
+          }
+        });
+    } else if (variant === "login") {
+      fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status === 200) {
+            Cookies.set(ACCESS_TOKEN_COOKIE, data?.metadata?.token);
+            Cookies.set(USER_ID, data?.metadata?.uid);
+            toast.success(data.msg);
+            navigate("/");
+          } else {
+            toast.error(data.msg);
+          }
+        });
+    }
   };
 
   return (
