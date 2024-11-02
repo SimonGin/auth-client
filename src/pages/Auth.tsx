@@ -29,6 +29,9 @@ const AuthPage = () => {
   } = useForm<FormFields>();
 
   useEffect(() => {
+    if (Cookies.get(ACCESS_TOKEN_COOKIE)) {
+      navigate("/");
+    }
     reset({
       name: "",
       email: "",
