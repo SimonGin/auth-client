@@ -180,7 +180,7 @@ const AuthPage = () => {
                 size="md"
                 className="text-xl"
                 color="gray"
-                label="Password"
+                label="Confirm Password"
                 {...({} as any)}
               />
               {errors.confirmPassword && (
