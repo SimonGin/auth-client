@@ -34,6 +34,7 @@ const AuthPage = () => {
     if (Cookies.get(ACCESS_TOKEN_COOKIE)) {
       navigate("/");
     }
+    setLoading(false);
     reset({
       name: "",
       email: "",
@@ -70,7 +71,7 @@ const AuthPage = () => {
           setLoading(false);
         });
     } else if (auth_variant === "login") {
-      fetch(`${import.meta.env.VITE_API_URL}/login`, {
+      fetch(`https://fluffy-express-api.vercel.app/login`, {
         method: "POST",
         credentials: "include",
         headers: {
