@@ -31,11 +31,13 @@ const ProfilePage = () => {
     if (!Cookies.get(ACCESS_TOKEN_COOKIE)) {
       navigate("/login");
     }
-    fetch(`${import.meta.env.VITE_API_URL}/profile`, {
+    fetch(`https://fluffy-express-api.vercel.app/profile`, {
       credentials: "include",
       headers: {
         accept: "application/json",
         Authorization: `Bearer ${Cookies.get(ACCESS_TOKEN_COOKIE)}`,
+        "Access-Control-Allow-Origin": "https://fluffy-express-api.vercel.app",
+        "Access-Control-Allow-Credentials": "true",
       },
     })
       .then((res) => res.json())
