@@ -75,7 +75,6 @@ const AuthPage = () => {
         method: "POST",
         credentials: "include",
         headers: {
-          "Content-Type": "application/json",
           "Access-Control-Allow-Origin":
             "https://fluffy-express-api.vercel.app",
           "Access-Control-Allow-Credentials": "true",
