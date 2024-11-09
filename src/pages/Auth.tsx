@@ -48,11 +48,13 @@ const AuthPage = () => {
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     setLoading(true);
     if (auth_variant === "register") {
-      fetch(`${import.meta.env.VITE_API_URL}/register`, {
+      fetch(`https://fluffy-express-api.vercel.app/register`, {
         method: "POST",
         credentials: "include",
         headers: {
-          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin":
+            "https://fluffy-express-api.vercel.app",
+          "Access-Control-Allow-Credentials": "true",
         },
         body: JSON.stringify({
           name: data.name,
