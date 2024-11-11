@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Button, Alert } from "@material-tailwind/react";
 import { RiLoginBoxLine } from "react-icons/ri";
 import { TiWarning } from "react-icons/ti";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaPowerOff } from "react-icons/fa";
 const HomePage = () => {
   const [authorized, setAuthorized] = useState(false);
   useEffect(() => {
@@ -26,7 +26,12 @@ const HomePage = () => {
           setAuthorized(false);
         }
       });
-  }, []);
+  }, [authorized]);
+
+  const logOut = () => {
+    Cookies.remove(ACCESS_TOKEN_COOKIE);
+    setAuthorized(false);
+  };
 
   return (
     <>
@@ -69,6 +74,17 @@ const HomePage = () => {
               <RiLoginBoxLine />
             </Button>
           </Link>
+          {authorized && (
+            <Button
+              onClick={logOut}
+              color="red"
+              className="w-48 my-2 flex flex-row items-center justify-center gap-2"
+              {...({} as any)}
+            >
+              <FaPowerOff />
+              Log Out
+            </Button>
+          )}
         </div>
       </div>
     </>

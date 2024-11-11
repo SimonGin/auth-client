@@ -54,7 +54,7 @@ const ProfilePage = () => {
 
   const logOut = () => {
     Cookies.remove(ACCESS_TOKEN_COOKIE);
-    navigate("/login");
+    navigate("/");
   };
   return (
     <div className="h-screen flex flex-col items-center justify-center">
