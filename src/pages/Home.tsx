@@ -64,17 +64,7 @@ const HomePage = () => {
               Profile page
             </Button>
           </Link>
-          <Link to="/login">
-            <Button
-              color="blue"
-              className="w-48 my-2 flex flex-row items-center justify-center gap-2"
-              {...({} as any)}
-            >
-              Log In
-              <RiLoginBoxLine />
-            </Button>
-          </Link>
-          {authorized && (
+          {authorized ? (
             <Button
               onClick={logOut}
               color="red"
@@ -84,6 +74,17 @@ const HomePage = () => {
               <FaPowerOff />
               Log Out
             </Button>
+          ) : (
+            <Link to="/login">
+              <Button
+                color="blue"
+                className="w-48 my-2 flex flex-row items-center justify-center gap-2"
+                {...({} as any)}
+              >
+                Log In
+                <RiLoginBoxLine />
+              </Button>
+            </Link>
           )}
         </div>
       </div>
